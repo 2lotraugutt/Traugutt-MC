@@ -1,6 +1,5 @@
 use std::collections::HashMap;
-use std::fs::read_to_string;
-use std::env;
+use std::fs::read_to_string; use std::env;
 
 use valence::*;
 use valence::prelude::*;
@@ -11,6 +10,8 @@ use valence::command::handler::CommandResultEvent;
 use valence::command::scopes::CommandScopes;
 use valence::command::AddCommand;
 use valence::command_macros::Command;
+
+use valence::client::ViewDistance;
 
 const LOGIN_SPAWN_POS: [f64; 3] = [
     1.5 as f64,
@@ -66,7 +67,6 @@ impl LoginResource {
 #[derive(Command, Debug, Clone)]
 #[paths("login {password}")]
 #[scopes("notloged.login")]
-#[allow(dead_code)]
 pub(crate) struct LoginCommand {
     password: String
 }
@@ -79,10 +79,13 @@ pub struct LoginEvent{
 fn setup(
     mut commands: Commands,
     server: Res<Server>,
-    dimensions: Res<DimensionTypeRegistry>,
+    mut dimensions: ResMut<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>, 
     mut login_resource: ResMut<LoginResource>
 ) {
+    let mut dim = DimensionType::default();
+    dim.has_skylight = false;
+    dimensions.insert(Ident::new("login").unwrap(), dim);    
     let mut login_layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
     worldgen(&mut login_layer);
 
@@ -147,7 +150,7 @@ fn handle_login_command(
         }
         else {
             client.send_chat_message(
-                "[Login] ".into_text().color(Color::GOLD).italic() +
+                "[Login] ".into_text().color(Color::GOLD) +
                 "LOGIN FAILED".into_text().color(Color::RED).bold().not_italic()
             );
         }
@@ -164,6 +167,7 @@ fn init_clients(
             &mut GameMode, // game_mode
             &mut Health, //health
             &mut CommandScopes, //permisssions
+            &mut ViewDistance
         ),
         Added<Client>,
     >,
@@ -177,8 +181,10 @@ fn init_clients(
         mut game_mode,
         mut health,
         mut permissions,
+        mut distance
     ) in &mut clients
     {
+        distance.set(10);
         let layer = login_resource.layer_id.unwrap();
 
         layer_id.0 = layer;

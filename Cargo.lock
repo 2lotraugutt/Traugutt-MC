@@ -437,9 +437,9 @@ checksum = "a2bd12c1caf447e69cd4528f47f94d203fd2582878ecb9e9465484c4148a8223"
 
 [[package]]
 name = "cc"
-version = "1.0.87"
+version = "1.0.88"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3286b845d0fccbdd15af433f61c5970e711987036cb468f437ff6badd70f4e24"
+checksum = "02f341c093d19155a6e41631ce5971aac4e9a868262212153124c15fa22d1cdc"
 
 [[package]]
 name = "cesu8"
@@ -876,9 +876,9 @@ checksum = "28eaf72f9d21ee92f580d066b93d05742a4d188e91016b8165dc7a75c0475309"
 
 [[package]]
 name = "hermit-abi"
-version = "0.3.6"
+version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd5256b483761cd23699d0da46cc6fd2ee3be420bbe6d020ae4a091e70b7e9fd"
+checksum = "379dada1584ad501b383485dd706b8afb7a70fcbc7f4da7d780638a5a6124a60"
 
 [[package]]
 name = "hmac"
@@ -1063,9 +1063,9 @@ checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "lru"
-version = "0.12.2"
+version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db2c024b41519440580066ba82aab04092b333e09066a5eb86c7c4890df31f22"
+checksum = "d3262e75e648fce39813cb56ac41f3c3e3f65217ebf3844d818d1f9398cfb0dc"
 dependencies = [
  "hashbrown",
 ]
@@ -1667,6 +1667,7 @@ dependencies = [
 name = "server"
 version = "0.1.0"
 dependencies = [
+ "threadpool",
  "valence",
 ]
 
@@ -1878,6 +1879,15 @@ checksum = "8b9ef9bad013ada3808854ceac7b46812a6465ba368859a37e2100283d2d719c"
 dependencies = [
  "cfg-if",
  "once_cell",
+]
+
+[[package]]
+name = "threadpool"
+version = "1.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d050e60b33d41c19108b32cea32164033a9013fe3b46cbd4457559bfbf77afaa"
+dependencies = [
+ "num_cpus",
 ]
 
 [[package]]
@@ -2150,7 +2160,7 @@ dependencies = [
 [[package]]
 name = "valence"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -2182,7 +2192,7 @@ dependencies = [
 [[package]]
 name = "valence_advancement"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2195,7 +2205,7 @@ dependencies = [
 [[package]]
 name = "valence_anvil"
 version = "0.1.0"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2213,7 +2223,7 @@ dependencies = [
 [[package]]
 name = "valence_boss_bar"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2226,7 +2236,7 @@ dependencies = [
 [[package]]
 name = "valence_build_utils"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "proc-macro2",
@@ -2236,7 +2246,7 @@ dependencies = [
 [[package]]
 name = "valence_command"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -2254,7 +2264,7 @@ dependencies = [
 [[package]]
 name = "valence_command_macros"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2264,7 +2274,7 @@ dependencies = [
 [[package]]
 name = "valence_entity"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -2293,7 +2303,7 @@ dependencies = [
 [[package]]
 name = "valence_generated"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "heck",
@@ -2310,7 +2320,7 @@ dependencies = [
 [[package]]
 name = "valence_ident"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "serde",
  "thiserror",
@@ -2320,7 +2330,7 @@ dependencies = [
 [[package]]
 name = "valence_ident_macros"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2330,7 +2340,7 @@ dependencies = [
 [[package]]
 name = "valence_inventory"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2342,7 +2352,7 @@ dependencies = [
 [[package]]
 name = "valence_lang"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "heck",
@@ -2356,7 +2366,7 @@ dependencies = [
 [[package]]
 name = "valence_math"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "glam 0.25.0",
 ]
@@ -2364,7 +2374,7 @@ dependencies = [
 [[package]]
 name = "valence_nbt"
 version = "0.8.0"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "byteorder",
  "cesu8",
@@ -2377,7 +2387,7 @@ dependencies = [
 [[package]]
 name = "valence_network"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2408,7 +2418,7 @@ dependencies = [
 [[package]]
 name = "valence_player_list"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2420,7 +2430,7 @@ dependencies = [
 [[package]]
 name = "valence_protocol"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "aes",
  "anyhow",
@@ -2449,7 +2459,7 @@ dependencies = [
 [[package]]
 name = "valence_protocol_macros"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -2460,7 +2470,7 @@ dependencies = [
 [[package]]
 name = "valence_registry"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -2478,7 +2488,7 @@ dependencies = [
 [[package]]
 name = "valence_scoreboard"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2490,7 +2500,7 @@ dependencies = [
 [[package]]
 name = "valence_server"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -2518,7 +2528,7 @@ dependencies = [
 [[package]]
 name = "valence_server_common"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2531,7 +2541,7 @@ dependencies = [
 [[package]]
 name = "valence_text"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "serde",
  "serde_json",
@@ -2544,7 +2554,7 @@ dependencies = [
 [[package]]
 name = "valence_weather"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -2555,7 +2565,7 @@ dependencies = [
 [[package]]
 name = "valence_world_border"
 version = "0.2.0-alpha.1+mc.1.20.1"
-source = "git+ssh://git@github.com/2lotraugutt/valeance#f372f940e8bf8b7bafad9f59f98d89a697f7d3a6"
+source = "git+ssh://git@github.com/2lotraugutt/valeance#6ee3e251c172046c2d33662efe66fe1b01c835d2"
 dependencies = [
  "bevy_app",
  "bevy_ecs",

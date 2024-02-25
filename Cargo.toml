@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+threadpool = "1.8.1"
 valence = { git = "ssh://git@github.com/2lotraugutt/valeance" }
