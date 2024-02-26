@@ -36,7 +36,7 @@ impl Plugin for SpawnPlugin {
     }
 }
 
-static CHUNKS: i32 = 64;
+static CHUNKS: i32 = 32;
 // fn load_chunk_line(path: impl Into<PathBuf>, biomes: &BiomeRegistry, z: i32) -> Vec<(ChunkPos,UnloadedChunk)> {
 // let mut ret: Vec<(ChunkPos,UnloadedChunk)> = vec![];
 //     let mut anvil_dimention_folder = DimensionFolder::new(path, &biomes);
@@ -63,7 +63,7 @@ fn setup(
     let mut anvil_dimention_folder = DimensionFolder::new(spawn_world, &biomes);
     let mut stdout_f = io::stdout();
     for z in -CHUNKS/2..CHUNKS/2 {
-        print!("\r\x1b[33mLoading World: \x1b[33;1m{}%\x1b[0m", 100*(z+CHUNKS/2)/CHUNKS);
+        print!("\r\x1b[33mLoading Spawn: \x1b[33;1m{}%\x1b[0m", 100*(z+CHUNKS/2)/CHUNKS);
         let _ =stdout_f.flush();
         for x in -CHUNKS/2..CHUNKS/2 {
             let pos = ChunkPos::new(x, z);
@@ -71,29 +71,12 @@ fn setup(
             layer.chunk.insert_chunk(pos, chunk);
         }
     }
-    println!("\x1b[32;1m\rLoading World Complete \x1b[0m(Loaded {} Chunks)\x1b[0m", layer.chunk.chunks().count());
+    println!("\x1b[32;1m\rLoading Spawn Complete \x1b[0m(Loaded {} Chunks)\x1b[0m", layer.chunk.chunks().count());
     // // worldgen(&mut layer);
 
     let spawned = commands.spawn(layer);
     spawn_resource.layer_id = Some(spawned.id());
 }
-
-// fn worldgen(
-//     layer: &mut LayerBundle,
-// ) {
-//     for x in -10..10 {
-//         for z in -10..10 {
-//             layer.chunk.insert_chunk([x, z], UnloadedChunk::new());
-//         }
-//     }
-//     // let block = BlockState::BARRIER;
-//     let block = BlockState::STONE;
-//     for x in -10*10..10*10 {
-//         for z in -10*20..10*10 {
-//             layer.chunk.set_block([x, -1, z], block);
-//         }
-//     }
-// }
 
 const SPAWN_POS: [f64; 3] = [
     0 as f64,
@@ -134,40 +117,3 @@ fn handle_login_event(
     }
 
 }
-
-
-// fn handle_chunk_loads(
-//     mut events: EventReader<ChunkLoadEvent>,
-//     mut layers: Query<&mut ChunkLayer, With<AnvilLevel>>,
-//     spawn_resource: Res<SpawnResource>,
-// ) {
-//     let mut layer = layers.get_mut(spawn_resource.layer_id.unwrap()).unwrap();
-
-//     for event in events.read() {
-//         match &event.status {
-//             ChunkLoadStatus::Success { .. } => {
-//                 println!("Loaded chunk at x: {} z: {}", event.pos.x, event.pos.z);
-//                 // The chunk was inserted into the world. Nothing for us to do.
-//             }
-//             ChunkLoadStatus::Empty => {
-//                 println!("Inserted chunk at x: {} z: {}", event.pos.x, event.pos.z);
-//                 // There's no chunk here so let's insert an empty chunk. If we were doing
-//                 // terrain generation we would prepare that here.
-//                 // println!("Creating chunk at x: {} z: {}", event.pos.x, event.pos.z);
-//                 layer.insert_chunk(event.pos, UnloadedChunk::new());
-//             }
-//             ChunkLoadStatus::Failed(e) => {
-//                 // Something went wrong.
-//                 let errmsg = format!(
-//                     "failed to load chunk at ({}, {}): {e:#}",
-//                     event.pos.x, event.pos.z
-//                 );
-
-//                 eprintln!("{errmsg}");
-//                 layer.send_chat_message(errmsg.color(Color::RED));
-
-//                 layer.insert_chunk(event.pos, UnloadedChunk::new());
-//             }
-//         }
-//     }
-// }

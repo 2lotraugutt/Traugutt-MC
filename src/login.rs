@@ -13,6 +13,8 @@ use valence::command_macros::Command;
 
 use valence::client::ViewDistance;
 
+use crate::open_world::OpenWorldResource;
+
 const LOGIN_SPAWN_POS: [f64; 3] = [
     1.5 as f64,
     128 as f64,
@@ -27,8 +29,9 @@ impl Plugin for LoginPlugin {
             .insert_resource(login_asset)
             .add_systems(Startup, setup)
             .add_command::<LoginCommand>()
+            .add_command::<SpectateCommand>()
             .add_event::<LoginEvent>()
-            .add_systems(Update, (handle_login_command,init_clients));
+            .add_systems(Update, (handle_login_command,handle_spectate_command,init_clients));
     }
 }
 
@@ -62,6 +65,12 @@ impl LoginResource {
         }
         unreachable!();
     }
+}
+
+#[derive(Command, Debug, Clone)]
+#[paths("spectate")]
+#[scopes("notloged.spectate")]
+pub(crate) struct SpectateCommand {
 }
 
 #[derive(Command, Debug, Clone)]
@@ -154,6 +163,41 @@ fn handle_login_command(
                 "LOGIN FAILED".into_text().color(Color::RED).bold().not_italic()
             );
         }
+    }
+}
+fn handle_spectate_command(
+    mut events: EventReader<CommandResultEvent<SpectateCommand>>,
+    mut clients: Query<(
+            &mut Client, // client
+            &mut CommandScopes,
+            &mut EntityLayerId, // layer_id
+            &mut VisibleChunkLayer, // visable_chunk_layer
+            &mut VisibleEntityLayers, // visable_chunk_layer
+            &mut GameMode,
+        )>,
+    open_world_resource: Res<OpenWorldResource>, 
+    // mut ev_login: EventWriter<LoginEvent>,
+) {
+    for event in events.read() {
+        let (
+            ref mut client,
+            ref mut permissions,
+            ref mut layer_id,
+            ref mut visible_chunk_layer,
+            ref mut visible_entity_layer,
+            ref mut gamemode,
+        ) = &mut clients.get_mut(event.executor).unwrap();
+        client.send_chat_message(
+            "[Login] ".into_text().color(Color::GOLD) +
+            "You are a spectator of the world".into_text().color(Color::GREEN).bold().not_italic()
+        );
+        permissions.add("spectator");
+        permissions.remove("notloged");
+        **gamemode = GameMode::Spectator;
+        layer_id.0 = open_world_resource.layer_id.unwrap();
+        visible_chunk_layer.0 = open_world_resource.layer_id.unwrap();
+        visible_entity_layer.0.insert(open_world_resource.layer_id.unwrap());
+        // ev_login.send(SpectateEvent{player: event.executor});
     }
 }
 

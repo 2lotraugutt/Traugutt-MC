@@ -4,6 +4,7 @@ use valence::prelude::*;
 mod login;
 mod spawn;
 mod admin;
+mod open_world;
 
 pub fn main () {
     println!("\x1b[32;1mII LO Traugutt Minecraft Torunament Server\x1b[0m");
@@ -17,6 +18,7 @@ pub fn main () {
         .add_systems(Update, despawn_disconnected_clients)
         .add_plugins(login::LoginPlugin) 
         .add_plugins(spawn::SpawnPlugin)
+        .add_plugins(open_world::OpenWorldPlugin) 
         .add_plugins(admin::AdminPlugin)
         .run();
 }
