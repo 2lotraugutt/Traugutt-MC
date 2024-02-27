@@ -55,7 +55,7 @@ struct PmCommand {
 }
 
 #[derive(Command, Debug, Clone)]
-#[paths("teleport", "tp")]
+#[paths("tp")]
 #[scopes("admin.teleport")]
 enum TeleportCommand {
     #[paths = "{location}"]
@@ -85,16 +85,16 @@ enum TeleportDestination {
 }
 
 #[derive(Command, Debug, Clone)]
-#[paths("gamemode", "gm")]
+#[paths("gm")]
 #[scopes("admin.gamemode")]
 enum GamemodeCommand {
-    #[paths("survival {target?}")]
+    #[paths("0 {target?}")]
     Survival { target: Option<EntitySelector> },
-    #[paths("creative {target?}")]
+    #[paths("1 {target?}")]
     Creative { target: Option<EntitySelector> },
-    #[paths("adventure {target?}")]
+    #[paths("3 {target?}")]
     Adventure { target: Option<EntitySelector> },
-    #[paths("spectator {target?}")]
+    #[paths("2 {target?}")]
     Spectator { target: Option<EntitySelector> },
 }
 
