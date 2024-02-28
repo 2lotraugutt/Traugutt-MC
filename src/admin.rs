@@ -274,7 +274,7 @@ fn find_targets(
             EntitySelectors::SelfPlayer => {
                 vec![event.executor]
             }
-            eNTITYselectors::NearestPlayer => {
+            EntitySelectors::NearestPlayer => {
                 let executor_entity_layer = *entity_layers.get(event.executor).unwrap();
                 let executor_pos = positions.get(event.executor).unwrap();
                 let target = clients
@@ -332,27 +332,49 @@ fn handle_layer_command(
     &mut VisibleChunkLayer,
     &mut VisibleEntityLayers,
     )>,
+    usernames: Query<(Entity, &Username)>,
     login_res: Res<LoginResource>,
     spawn_res: Res<SpawnResource>,
     open_world_res: Res<OpenWorldResource>
 ) {
 	for event in events.read() {
-		let layer: Entity = match &event.result {
-			Login => login_res.layer_id,
-			Spawn => spawn_res.layer_id,
-			OpenWorld => open_world_res.layer_id
-		}.unwrap();
+		let (layer, target)  = match &event.result {
+			ChangeLayerCommand::Login{target} => (login_res.layer_id, target),
+			ChangeLayerCommand::Spawn{target} => (spawn_res.layer_id,target),
+			ChangeLayerCommand::OpenWorld{target} => (open_world_res.layer_id, target)
+		};
+        let layer = layer.unwrap();
+        let target = if let Some(target) = target {
+            match target{
+                EntitySelector::SimpleSelector(selector) => match selector {
+                    EntitySelectors::SinglePlayer(name) => {
+                        let target = usernames.iter().find(|(_, username)| username.0 == *name);
+                        match target {
+                            None => {
+                                return
+                            }
+                            Some(target_entity) => {
+                               target_entity.0
+                            }
+                        }
+                    },
+                    _ => return,
+                }
+                _ => return,
+            }
+        } else {
+            event.executor
+        };
 		let (
 			ref mut layer_id,
 			ref mut visible_chunk_layer,
 			ref mut visible_entity_layers,
-		) = &mut clients.get_mut(event.executor).unwrap();
+		) = &mut clients.get_mut(target).unwrap();
 		let old_layer = layer_id.0;
 		layer_id.0 = layer;
 		visible_chunk_layer.0 = layer;
 		visible_entity_layers.0.remove(&old_layer);
 		visible_entity_layers.0.insert(layer);
-		println!("ChangingLayers");
 	}
 }
 

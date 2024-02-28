@@ -14,7 +14,7 @@ use valence::command_macros::Command;
 use valence::client::ViewDistance;
 
 use crate::open_world::OpenWorldResource;
-use crate::spawn::SpawnResource;
+// use crate::spawn::SpawnResource;
 
 const LOGIN_SPAWN_POS: [f64; 3] = [
     1.5 as f64,
@@ -131,8 +131,8 @@ fn handle_login_command(
         )>,
     login_resource: Res<LoginResource>,
     mut ev_login: EventWriter<LoginEvent>,
-    spawn_resource: Res<SpawnResource>,
-    open_world_resource: Res<OpenWorldResource>, 
+    // spawn_resource: Res<SpawnResource>,
+    // open_world_resource: Res<OpenWorldResource>, 
 ) {
     for event in events.read() {
         let compiled_command = &event.result;

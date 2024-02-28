@@ -26,7 +26,7 @@ pub struct OpenWorldResource {
     pub layer_id: Option<Entity>,
 }
 
-const CHUNKS: i32 = 64;
+const CHUNKS: i32 = 256;
 
 fn setup(
     mut commands: Commands,

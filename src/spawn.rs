@@ -1,6 +1,6 @@
 use std::env;
-use std::io;
-use std::io::Write;
+// use std::io;
+// use std::io::Write;
 
 use valence::*;
 use valence::prelude::*;
@@ -36,7 +36,7 @@ impl Plugin for SpawnPlugin {
     }
 }
 
-static CHUNKS: i32 = 32;
+static CHUNKS: i32 = 16;
 // fn load_chunk_line(path: impl Into<PathBuf>, biomes: &BiomeRegistry, z: i32) -> Vec<(ChunkPos,UnloadedChunk)> {
 // let mut ret: Vec<(ChunkPos,UnloadedChunk)> = vec![];
 //     let mut anvil_dimention_folder = DimensionFolder::new(path, &biomes);
@@ -71,6 +71,7 @@ fn setup(
             layer.chunk.insert_chunk(pos, chunk);
         }
     }
+
     println!("\x1b[32;1m\rLoading Spawn Complete \x1b[0m(Loaded {} Chunks)\x1b[0m", layer.chunk.chunks().count());
     // // worldgen(&mut layer);
 
