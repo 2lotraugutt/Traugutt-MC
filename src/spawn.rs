@@ -61,10 +61,10 @@ fn setup(
     let spawn_world = env::var("SPAWN_WORLD").unwrap_or("spawn".to_string());
     // let mut level = AnvilLevel::new(spawn_world, &biomes);
     let mut anvil_dimention_folder = DimensionFolder::new(spawn_world, &biomes);
-    let mut stdout_f = io::stdout();
+    // let mut stdout_f = io::stdout();
     for z in -CHUNKS/2..CHUNKS/2 {
-        print!("\r\x1b[33mLoading Spawn: \x1b[33;1m{}%\x1b[0m", 100*(z+CHUNKS/2)/CHUNKS);
-        let _ =stdout_f.flush();
+        // print!("\r\x1b[33mLoading Spawn: \x1b[33;1m{}%\x1b[0m", 100*(z+CHUNKS/2)/CHUNKS);
+        // let _ =stdout_f.flush();
         for x in -CHUNKS/2..CHUNKS/2 {
             let pos = ChunkPos::new(x, z);
             let chunk = anvil_dimention_folder.get_chunk(pos).unwrap().unwrap().chunk ;

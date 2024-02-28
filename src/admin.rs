@@ -13,6 +13,11 @@ use rand::prelude::IteratorRandom;
 use valence::entity::living::LivingEntity;
 // use valence::op_level::OpLevel;
 
+
+use crate::spawn::SpawnResource;
+use crate::open_world::OpenWorldResource;
+use crate::login::LoginResource;
+
 pub struct AdminPlugin;
 impl Plugin for AdminPlugin {
     fn build(&self, app: &mut App) {
@@ -21,11 +26,13 @@ impl Plugin for AdminPlugin {
             .add_command::<TeleportCommand>()
             .add_command::<GamemodeCommand>()
             .add_command::<AnounceCommand>()
+            .add_command::<ChangeLayerCommand>()
             .add_command::<PmCommand>()
             .add_systems(
                 Update,
                 (
                     handle_teleport_command,
+                    handle_layer_command,
                     handle_gamemode_command,
                     handle_anounce_command,
                     handle_pm_command,
@@ -52,6 +59,20 @@ struct AnounceCommand {
 struct PmCommand {
      user: String,
      message: GreedyString
+}
+
+#[derive(Command, Debug, Clone)]
+#[paths("cl")]
+#[scopes("admin.change_layer")]
+enum ChangeLayerCommand {
+    #[paths("lg {target?}")]
+    Login { target: Option<EntitySelector> },
+    #[paths("sp {target?}")]
+    Spawn { target: Option<EntitySelector> },
+    #[paths("ow {target?}")]
+    OpenWorld { target: Option<EntitySelector> },
+    // #[paths("2 {target?}")]
+    // Spectator { target: Option<EntitySelector> },
 }
 
 #[derive(Command, Debug, Clone)]
@@ -97,6 +118,7 @@ enum GamemodeCommand {
     #[paths("2 {target?}")]
     Spectator { target: Option<EntitySelector> },
 }
+
 
 fn handle_gamemode_command(
     mut events: EventReader<CommandResultEvent<GamemodeCommand>>,
@@ -252,7 +274,7 @@ fn find_targets(
             EntitySelectors::SelfPlayer => {
                 vec![event.executor]
             }
-            EntitySelectors::NearestPlayer => {
+            eNTITYselectors::NearestPlayer => {
                 let executor_entity_layer = *entity_layers.get(event.executor).unwrap();
                 let executor_pos = positions.get(event.executor).unwrap();
                 let target = clients
@@ -301,6 +323,37 @@ fn find_targets(
             vec![]
         }
     }
+}
+
+fn handle_layer_command(
+    mut events: EventReader<CommandResultEvent<ChangeLayerCommand>>,
+    mut clients: Query<(
+    &mut EntityLayerId,
+    &mut VisibleChunkLayer,
+    &mut VisibleEntityLayers,
+    )>,
+    login_res: Res<LoginResource>,
+    spawn_res: Res<SpawnResource>,
+    open_world_res: Res<OpenWorldResource>
+) {
+	for event in events.read() {
+		let layer: Entity = match &event.result {
+			Login => login_res.layer_id,
+			Spawn => spawn_res.layer_id,
+			OpenWorld => open_world_res.layer_id
+		}.unwrap();
+		let (
+			ref mut layer_id,
+			ref mut visible_chunk_layer,
+			ref mut visible_entity_layers,
+		) = &mut clients.get_mut(event.executor).unwrap();
+		let old_layer = layer_id.0;
+		layer_id.0 = layer;
+		visible_chunk_layer.0 = layer;
+		visible_entity_layers.0.remove(&old_layer);
+		visible_entity_layers.0.insert(layer);
+		println!("ChangingLayers");
+	}
 }
 
 fn handle_teleport_command(
