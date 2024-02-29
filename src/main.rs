@@ -4,6 +4,7 @@ use valence::prelude::*;
 mod login;
 mod spawn;
 mod admin;
+mod blocks;
 mod open_world;
 
 pub fn main () {
@@ -18,6 +19,7 @@ pub fn main () {
         .add_systems(Update, despawn_disconnected_clients)
         .add_plugins(login::LoginPlugin) 
         .add_plugins(spawn::SpawnPlugin)
+        .add_plugins(blocks::BlocksPlugin)
         .add_plugins(open_world::OpenWorldPlugin) 
         .add_plugins(admin::AdminPlugin)
         .run();

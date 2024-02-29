@@ -2,6 +2,7 @@
 use std::env;
 use std::io;
 use std::io::Write;
+use crate::blocks::BlocksResource;
 
 use valence::*;
 use valence::prelude::*;
@@ -33,6 +34,7 @@ fn setup(
     server: Res<Server>,
     dimensions: Res<DimensionTypeRegistry>,
     biomes: Res<BiomeRegistry>,
+    mut blocks_resource: ResMut<BlocksResource>,
     mut open_world_resource: ResMut<OpenWorldResource>
 ) {
     let mut layer = LayerBundle::new(ident!("overworld"), &dimensions, &biomes, &server);
@@ -53,6 +55,7 @@ fn setup(
     // // worldgen(&mut layer);
 
     let spawned = commands.spawn(layer);
+    blocks_resource.enabled_for.insert(spawned.id());
     open_world_resource.layer_id = Some(spawned.id());
 }
 
