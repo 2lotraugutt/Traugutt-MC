@@ -4,6 +4,7 @@ use valence::block::*;
 use valence::interact_block::*;
 use valence::inventory::*;
 use valence::prelude::*;
+use valence::math::IVec3;
 // use valence::*;
 
 pub struct BlocksPlugin;
@@ -49,13 +50,13 @@ fn digging(
 }
 
 fn place_blocks(
-    mut clients: Query<(&mut Inventory, &GameMode, &HeldItem, &VisibleChunkLayer)>,
+    mut clients: Query<(&mut Inventory, &GameMode, &HeldItem, &VisibleChunkLayer, &Position)>,
     mut layers: Query<&mut ChunkLayer>,
     mut events: EventReader<InteractBlockEvent>,
     resource: Res<BlocksResource>,
 ) {
     for event in events.read() {
-        let Ok((mut inventory, game_mode, held, layer)) = clients.get_mut(event.client) else {
+        let Ok((mut inventory, game_mode, held, layer,position)) = clients.get_mut(event.client) else {
             continue;
         };
         if !(resource.enabled_for.contains(&layer.0)){ continue;};
@@ -74,7 +75,7 @@ fn place_blocks(
 
         let Some(block_kind) = BlockKind::from_item_kind(stack.item) else {
             // can't place this item as a block
-            continue;
+            continue
         };
 
         if *game_mode == GameMode::Survival {
@@ -88,17 +89,64 @@ fn place_blocks(
             }
         }
         let real_pos = event.position.get_in_direction(event.face);
+        let Some(block) = layer.block(real_pos) else {continue;};
+        if !block.state.is_replaceable() {continue;};
         println!("{:?} {:?}", event.face, event.cursor_pos);
-        let state = block_kind.to_state().set(
-            PropName::Facing,
-            match event.face {
-                Direction::Down => PropValue::Down,
-                Direction::Up => PropValue::Up,
-                Direction::West => PropValue::East,
-                Direction::East => PropValue::West,
-                Direction::North => PropValue::South,
-                Direction::South => PropValue::North,
+        let mut state = block_kind.to_state();
+
+        match event.face {
+            Direction::Up | Direction::Down  => {
+                let real_pos_vec3:Vec3 = (real_pos.x as f32, real_pos.y as f32, real_pos.z as f32).into();
+                let real_pos_vec3 = real_pos_vec3+event.cursor_pos;
+                let position_vec3:Vec3 = (position.x as f32, position.y as f32, position.z as f32).into();
+                let delta:Vec3 = real_pos_vec3 - position_vec3;
+                let direction_from_player = if delta.x.abs() < delta.z.abs() {
+                    if delta.z < 0.0{ PropValue::North } else { PropValue::South } }
+                else { if delta.x > 0.0{ PropValue::East } else { PropValue::West } }; 
+
+                state = state.set(
+                    PropName::Facing,
+                    direction_from_player,
+                 );
+            },
+            _ => {
+                if let Some(block) = state.wall_block_id() {
+                    println!("{:?} has a wall block", state);
+                    state = block;
+                    state = state.set(
+                        PropName::Facing,
+                        match event.face{
+                            Direction::West => PropValue::West,
+                            Direction::East => PropValue::East,
+                            Direction::North => PropValue::North,
+                            Direction::South => PropValue::South,
+                            _ => unreachable!()
+
+                        }
+                     );
+                }else {
+                    state = state.set(
+                        PropName::Facing,
+                        match event.face{
+                            Direction::West => PropValue::East,
+                            Direction::East => PropValue::West,
+                            Direction::North => PropValue::South,
+                            Direction::South => PropValue::North,
+                            _ => unreachable!()
+
+                        },
+                        )
+                }
+
             }
+        }
+        state = state.set(
+            PropName::Axis,
+            match event.face {
+                Direction::Down | Direction::Up => PropValue::Y,
+                Direction::North | Direction::South => PropValue::Z,
+                Direction::West | Direction::East => PropValue::X,
+            },
         );
         layer.set_block(real_pos, state);
     }
