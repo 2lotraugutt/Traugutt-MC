@@ -18,6 +18,7 @@ use crate::spawn::SpawnResource;
 use crate::open_world::OpenWorldResource;
 use crate::login::LoginResource;
 
+/// Plugin that adds handeling of many commands
 pub struct AdminPlugin;
 impl Plugin for AdminPlugin {
     fn build(&self, app: &mut App) {
@@ -49,6 +50,7 @@ impl Plugin for AdminPlugin {
 #[derive(Command, Debug, Clone)]
 #[paths("anounce {message}", "an {message}")]
 #[scopes("mod.anounce", "admin.anounce")]
+/// Command that sends message to all players on the server
 struct AnounceCommand {
      message: GreedyString
 }
@@ -56,6 +58,7 @@ struct AnounceCommand {
 #[derive(Command, Debug, Clone)]
 #[paths("pm {user} {message}")]
 #[scopes("loged.pm")]
+/// `loged` user accesable command to send a message to any other user of the server
 struct PmCommand {
      user: String,
      message: GreedyString
@@ -64,6 +67,7 @@ struct PmCommand {
 #[derive(Command, Debug, Clone)]
 #[paths("cl")]
 #[scopes("admin.change_layer")]
+/// Command to switch between worlds the options are lg (login), cp (spawn), ow (open_world)
 enum ChangeLayerCommand {
     #[paths("lg {target?}")]
     Login { target: Option<EntitySelector> },
@@ -78,6 +82,7 @@ enum ChangeLayerCommand {
 #[derive(Command, Debug, Clone)]
 #[paths("tp")]
 #[scopes("admin.teleport")]
+/// Command to teleport user to another location uses Entity Selectors
 enum TeleportCommand {
     #[paths = "{location}"]
     ExecutorToLocation { location: Vec3Parser },
@@ -108,6 +113,7 @@ enum TeleportDestination {
 #[derive(Command, Debug, Clone)]
 #[paths("gm")]
 #[scopes("admin.gamemode")]
+/// Command to change gamemode uses Entity Selectors
 enum GamemodeCommand {
     #[paths("0 {target?}")]
     Survival { target: Option<EntitySelector> },
@@ -225,6 +231,8 @@ fn handle_gamemode_command(
     }
 }
 
+
+/// Used to resolve EntitySelectors
 fn find_targets(
     living_entities: &Query<Entity, With<LivingEntity>>,
     clients: &mut Query<(Entity, &mut Client)>,

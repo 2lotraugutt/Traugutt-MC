@@ -7,6 +7,7 @@ mod admin;
 mod blocks;
 mod open_world;
 
+/// Launches the server and adds nesesary plugins
 pub fn main () {
     println!("\x1b[32;1mII LO Traugutt Minecraft Torunament Server\x1b[0m");
     App::new()

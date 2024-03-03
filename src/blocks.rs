@@ -4,7 +4,6 @@ use valence::block::*;
 use valence::interact_block::*;
 use valence::inventory::*;
 use valence::prelude::*;
-use valence::math::IVec3;
 // use valence::*;
 
 pub struct BlocksPlugin;
@@ -88,58 +87,49 @@ fn place_blocks(
                 inventory.set_slot(slot_id, ItemStack::EMPTY);
             }
         }
-        let real_pos = event.position.get_in_direction(event.face);
+        let Some(block) = layer.block(event.position) else {continue;};
+        let block = block.state;
+        let real_pos = match block.is_replaceable() {
+            false => event.position.get_in_direction(event.face),
+            true => event.position,
+        };
         let Some(block) = layer.block(real_pos) else {continue;};
         if !block.state.is_replaceable() {continue;};
-        println!("{:?} {:?}", event.face, event.cursor_pos);
         let mut state = block_kind.to_state();
 
+        // Half
+        state = state.set(
+            PropName::Half,
+            match event.face {
+                Direction::West| Direction::East | Direction::South | Direction::North =>
+                        if event.cursor_pos.y > 0.5 { PropValue::Top } else { PropValue::Bottom },
+                Direction::Down => PropValue::Top,
+                Direction::Up => PropValue::Bottom,
+        });
+
+        // Facing
+        let delta = Vec3::new(event.position.x as f32, event.position.y as f32, event.position.z as f32) + event.cursor_pos -
+        Vec3::new(position.x as f32, position.y as f32, position.z as f32);
+        let direction_from_player = if delta.x.abs() < delta.z.abs() {
+        if delta.z < 0.0{ Direction::North } else { Direction::South } }
+        else { if delta.x > 0.0{ Direction::East } else { Direction::West } }; 
         match event.face {
-            Direction::Up | Direction::Down  => {
-                let real_pos_vec3:Vec3 = (real_pos.x as f32, real_pos.y as f32, real_pos.z as f32).into();
-                let real_pos_vec3 = real_pos_vec3+event.cursor_pos;
-                let position_vec3:Vec3 = (position.x as f32, position.y as f32, position.z as f32).into();
-                let delta:Vec3 = real_pos_vec3 - position_vec3;
-                let direction_from_player = if delta.x.abs() < delta.z.abs() {
-                    if delta.z < 0.0{ PropValue::North } else { PropValue::South } }
-                else { if delta.x > 0.0{ PropValue::East } else { PropValue::West } }; 
-
-                state = state.set(
-                    PropName::Facing,
-                    direction_from_player,
-                 );
-            },
-            _ => {
-                if let Some(block) = state.wall_block_id() {
-                    println!("{:?} has a wall block", state);
-                    state = block;
-                    state = state.set(
-                        PropName::Facing,
-                        match event.face{
-                            Direction::West => PropValue::West,
-                            Direction::East => PropValue::East,
-                            Direction::North => PropValue::North,
-                            Direction::South => PropValue::South,
-                            _ => unreachable!()
-
-                        }
-                     );
-                }else {
-                    state = state.set(
-                        PropName::Facing,
-                        match event.face{
-                            Direction::West => PropValue::East,
-                            Direction::East => PropValue::West,
-                            Direction::North => PropValue::South,
-                            Direction::South => PropValue::North,
-                            _ => unreachable!()
-
-                        },
-                        )
-                }
-
-            }
-        }
+                Direction::West| Direction::East | Direction::South | Direction::North 
+                    => state = state.wall_block_id().unwrap_or(state),
+                _ => (),
+        };
+        let facing = match direction_from_player.rotate(state.get_rotation_inversion()) {
+            Direction::West => PropValue::West,
+            Direction::East => PropValue::East,
+            Direction::North => PropValue::North,
+            Direction::South => PropValue::South,
+            _ => unreachable!(),
+        };
+        state = state.set(
+                PropName::Facing,
+                facing
+            );
+        // Axis
         state = state.set(
             PropName::Axis,
             match event.face {
@@ -148,6 +138,15 @@ fn place_blocks(
                 Direction::West | Direction::East => PropValue::X,
             },
         );
+        // Disalllow placing walled blocks if the wall is not solid
+        // TODO check if the wall is solid (not air)
+        if state.is_walled() {
+            let Some(base_block) = layer.block(real_pos.get_in_direction(direction_from_player)) else {continue;};
+            let base_block = base_block.state;
+            if base_block.is_air() {
+                continue;
+            }
+        }
         layer.set_block(real_pos, state);
     }
 }
